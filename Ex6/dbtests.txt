@@ -1,0 +1,294 @@
+>> clear; swipl
+
+Welcome to SWI-Prolog (Multi-threaded, 64 bits, Version 6.2.2)
+  Copyright (c) 1990-2012 University of Amsterdam, VU Amsterdam
+  SWI-Prolog comes with ABSOLUTELY NO WARRANTY. This is free software,
+  and you are welcome to redistribute it under certain conditions.
+  Please visit http://www.swi-prolog.org for details.
+
+  For help, use ?- help(Topic). or ?- apropos(Word).
+***0
+  ?- [db6].
+  Warning: /Users/rfoster/Documents/KSU/CIS_505/Ex6-RLF/db6.pl:25:
+  Singleton variables: [V]
+  Warning: /Users/rfoster/Documents/KSU/CIS_505/Ex6-RLF/db6.pl:44:
+  Singleton variables: [YY,UML]
+  % db6 compiled 0.00 sec, 13 clauses
+  true.
+***1
+  ?- addDB([(b,2), (a,1), (c,4)]).
+  true.
+***2
+  ?- listing.
+
+  commit :-
+  getupdates(A),
+  removedups(A, B),
+  member((C, _), B),
+  retract(upd(C, _)),
+  retract(mapsTo(C, _)),
+  getupdatemaplist(_),
+  addDB(B).
+
+  lookup(A) :-
+  findall((A, B), mapsTo(A, B), H),
+  findall((C, D), upd(C, D), E),
+  (   member((F, G), E),
+  F=A,
+  write(G)
+  ;   member((I, J), H),
+  I=A,
+  write(J)
+  ),
+  nl.
+
+  :- dynamic upd/2.
+
+  nodups([], []).
+  nodups([ (A, B)|C], [ (A, B)|E]) :-
+  nodups(C, D), select((A, _), D, E).
+  nodups([ (A, B)|C], [ (A, B)|D]) :-
+  nodups(C, D).
+
+  :- multifile message_severity_color/2.
+
+  :- thread_local thread_message_hook/3.
+  :- dynamic thread_message_hook/3.
+  :- volatile thread_message_hook/3.
+
+
+  getupdates(C) :-
+  write('Updates to commit: [ '),
+  findall((A, B), upd(A, B), C),
+  member((D, E), C),
+  write('('),
+  write((D, E)),
+  write(')'),
+  write(' ]'),
+  nl.
+
+  removedups(A, B) :- nodups(A, B), !.
+
+  update(A, B) :-
+  asserta(upd(A, B)),
+  write(A),
+  write(' updated'),
+  nl.
+
+  addDB([]).
+  addDB([ (A, B)|C]) :-
+  asserta(mapsTo(A, B)),
+  addDB(C).
+
+  revert :-
+  retract(upd(A, _)),
+  write(A),
+  write(' reverted'),
+  nl, !.
+
+  getupdatemaplist(H) :-
+  findall((A, B), mapsTo(A, B), F),
+  findall((C, D), upd(C, D), E),
+  append(E, F, G),
+  removedups(G, H).
+
+  :- dynamic mapsTo/2.
+
+  mapsTo(c, 4).
+  mapsTo(a, 1).
+  mapsTo(b, 2).
+  true.
+***3
+  ?- lookup(a).
+  1
+  true.
+***4
+  ?- update(a, 99).
+  a updated
+  true.
+***5
+  ?- listing.
+
+  commit :-
+  getupdates(A),
+  removedups(A, B),
+  member((C, _), B),
+  retract(upd(C, _)),
+  retract(mapsTo(C, _)),
+  getupdatemaplist(_),
+  addDB(B).
+
+  lookup(A) :-
+  findall((A, B), mapsTo(A, B), H),
+  findall((C, D), upd(C, D), E),
+  (   member((F, G), E),
+  F=A,
+  write(G)
+  ;   member((I, J), H),
+  I=A,
+  write(J)
+  ),
+  nl.
+
+  :- dynamic upd/2.
+
+  upd(a, 99).
+
+  nodups([], []).
+  nodups([ (A, B)|C], [ (A, B)|E]) :-
+  nodups(C, D),
+  select((A, _), D, E).
+  nodups([ (A, B)|C], [ (A, B)|D]) :-
+  nodups(C, D).
+
+  :- multifile message_severity_color/2.
+
+
+  :- thread_local thread_message_hook/3.
+  :- dynamic thread_message_hook/3.
+  :- volatile thread_message_hook/3.
+
+
+  getupdates(C) :-
+  write('Updates to commit: ['),
+  findall((A, B), upd(A, B), C),
+  member((D, E), C),
+  write('('),
+  write((D, E)),
+  write(')'),
+  write(' ]'),
+  nl.
+
+  removedups(A, B) :-
+  nodups(A, B), !.
+
+  update(A, B) :-
+  asserta(upd(A, B)),
+  write(A),
+  write(' updated'),
+  nl.
+
+  addDB([]).
+  addDB([ (A, B)|C]) :-
+  asserta(mapsTo(A, B)),
+  addDB(C).
+
+  revert :-
+  retract(upd(A, _)),
+  write(A),
+  write(' reverted'),
+  nl, !.
+
+  getupdatemaplist(H) :-
+  findall((A, B), mapsTo(A, B), F),
+  findall((C, D), upd(C, D), E),
+  append(E, F, G),
+  removedups(G, H).
+
+  :- dynamic mapsTo/2.
+
+  mapsTo(c, 4).
+  mapsTo(a, 1).
+  mapsTo(b, 2).
+  true.
+***6
+  ?- lookup(a).
+  99
+  true .
+***7
+  ?- update(b, 1000).
+  b updated
+  true.
+***8
+  ?- revert.
+  b reverted
+  true.
+***9
+  ?- commit.
+  Updates to commit: [(a,99) ]
+  true.
+***10
+  ?- listing.
+
+  commit :-
+  getupdates(A),
+  removedups(A, B),
+  member((C, _), B),
+  retract(upd(C, _)),
+  retract(mapsTo(C, _)),
+  getupdatemaplist(_),
+  addDB(B).
+
+  lookup(A) :-
+  findall((A, B), mapsTo(A, B), H),
+  findall((C, D), upd(C, D), E),
+  (   member((F, G), E),
+  F=A,
+  write(G)
+  ;   member((I, J), H),
+  I=A,
+  write(J)
+  ),
+  nl.
+
+  :- dynamic upd/2.
+
+
+  nodups([], []).
+  nodups([ (A, B)|C], [ (A, B)|E]) :-
+  nodups(C, D),
+  select((A, _), D, E).
+  nodups([ (A, B)|C], [ (A, B)|D]) :-
+  nodups(C, D).
+
+  :- multifile message_severity_color/2.
+
+  :- thread_local thread_message_hook/3.
+  :- dynamic thread_message_hook/3.
+  :- volatile thread_message_hook/3.
+
+
+  getupdates(C) :-
+  write('Updates to commit: ['),
+  findall((A, B), upd(A, B), C),
+  member((D, E), C),
+  write('('),
+  write((D, E)),
+  write(')'),
+  write(' ]'),
+  nl.
+
+  removedups(A, B) :-
+  nodups(A, B), !.
+
+  update(A, B) :-
+  asserta(upd(A, B)),
+  write(A),
+  write(' updated'),
+  nl.
+
+  addDB([]).
+  addDB([ (A, B)|C]) :-
+  asserta(mapsTo(A, B)),
+  addDB(C).
+
+  revert :-
+  retract(upd(A, _)),
+  write(A),
+  write(' reverted'),
+  nl, !.
+
+  getupdatemaplist(H) :-
+  findall((A, B), mapsTo(A, B), F),
+  findall((C, D), upd(C, D), E),
+  append(E, F, G),
+  removedups(G, H).
+
+  :- dynamic mapsTo/2.
+
+  mapsTo(a, 99).
+  mapsTo(c, 4).
+  mapsTo(b, 2).
+  true.
+
+
