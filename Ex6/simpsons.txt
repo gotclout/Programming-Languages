@@ -1,0 +1,93 @@
+| ?- [simpsons].
+[simpsons loaded]
+
+yes
+| ?- sister('Marge Bouvier', Z).
+
+Z = Patricia Bouvier;
+
+Z = Selma Bouvier;
+
+no
+| ?- aunt('Bart Simpson', Z).
+
+Z = Patricia Bouvier;
+
+Z = Selma Bouvier;
+
+no
+| ?- aunt(X, 'Patricia Bouvier').
+
+X = Bart Simpson;
+
+X = Lisa Simpson;
+
+X = Maggie Simpson;
+
+X = Ling Bouvier;
+
+no
+| ?- aunt(X,Y).
+
+X = Bart Simpson
+Y = Patricia Bouvier;
+
+X = Bart Simpson
+Y = Selma Bouvier;
+
+X = Lisa Simpson
+Y = Patricia Bouvier;
+
+X = Lisa Simpson
+Y = Selma Bouvier;
+
+X = Maggie Simpson
+Y = Patricia Bouvier;
+
+X = Maggie Simpson
+Y = Selma Bouvier;
+
+X = Ling Bouvier
+Y = Patricia Bouvier;
+
+X = Ling Bouvier
+Y = Marge Bouvier;
+
+no
+| ?- brother(A,B).
+
+A = Lisa Simpson
+B = Bart Simpson;
+
+A = Maggie Simpson
+B = Bart Simpson;
+
+no
+| ?- uncle(X,Y).
+
+no
+| ?-
+
+
+| ?- [library].
+[Compiling ./library]
+[library compiled, cpu time used: 0.0150 seconds]
+[library loaded]
+
+yes
+| ?- getOverdue('Homer', 25, List).   
+
+List = [k2,k4];
+
+no
+| ?-  getOverdue('Lisa', 25, List).
+
+List = [];
+
+no
+| ?- getOverdue(_, 50, List).
+
+List = [k2,k4,k3,k0];
+
+no
+| ?-
