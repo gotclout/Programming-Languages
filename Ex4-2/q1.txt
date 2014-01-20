@@ -1,0 +1,34 @@
+least [3, 2, 7] = least(3 :: [2, 7])
+                = let val m = least [2, 7]
+                  in if 3 < m then 3 else m
+                  end
+
+                = let val m = (
+                               let val m = least (2 :: [7]])
+                               in if 2 < m then 2 else m
+                               end
+                              )
+                  in if 3 < m then 3 else m
+                  end
+
+                = let val m = (
+                               let val m = (
+                                            least ([7])
+                                           )
+                                           in if 2 < m then 2 else m
+                                           end
+                              )
+                  in if 3 < m then 3 else m
+                  end
+
+                = let val m = (
+                                let val m = 7
+                                in if 2 < m then 2 else m
+                                end
+                              )
+                  in if 3 < m then 3 else m end
+
+                = let val m = 2
+                  in if 3 < 2 then 3 else 2 end
+
+                = 2
