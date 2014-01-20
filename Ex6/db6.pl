@@ -13,10 +13,12 @@ addDB([]).
 addDB([(K,V)|Rest]) :- asserta(mapsTo(K,V)), addDB(Rest).
 
 /* */
-getupdatemaplist(MULD) :- findall((K,V), mapsTo(K,V), ML), findall((KK, VV), upd(KK, VV), UL), append(UL, ML, MUL), removedups(MUL, MULD).
+getupdatemaplist(MULD) :- findall((K,V), mapsTo(K,V), ML), findall((KK, VV), upd(KK, VV), UL),
+  append(UL, ML, MUL), removedups(MUL, MULD).
 
 /*  lookup(K)  holds true when  K,V  is found in the database.  V  prints.  )irs, mapsTo(KK, VV), Pairs)*/
-lookup(K) :- findall((K,V), mapsTo(K,V), P), findall((KK, VV), upd(KK, VV), Q), ((member((XX, YY), Q), XX = K, write(YY)) ; (member((X, Y), P), X = K, write(Y))), nl.
+lookup(K) :- findall((K,V), mapsTo(K,V), P), findall((KK, VV), upd(KK, VV), Q),
+  ((member((XX, YY), Q), XX = K, write(YY)) ; (member((X, Y), P), X = K, write(Y))), nl.
 
 /* update(K,NewV)  holds true when  upd(K,NewV)  is asserted in the database */
 update(K, NewV) :- asserta(upd(K,NewV)), write(K), write(' updated'), nl.
@@ -36,12 +38,13 @@ revert :- retract(upd(K,V)), write(K), write(' reverted'), nl, !.
     4.  one adds  mapsTo(K,V)  for each (K.V) pair in the list in Step 2.
          (Hint: use  addDB.)
 */
+commit :- getupdates(UL), removedups(UL, DUL), (member((XX, _), DUL), retract(upd(XX, _)),
+  retract(mapsTo(XX, _))), getupdatemaplist(UML), addDB(DUL).
+  
+/* Get a list of updates and print them */
+getupdates(U) :- write('Updates to commit: ['), findall((K, V), upd(K, V), U),
+  member((KK, VV), U), ( write('('), write(KK','VV), write(')')), write(' ]'), nl.
 
-/* */
-getupdates(U) :- write('Updates to commit: ['), findall((K, V), upd(K, V), U), member((KK, VV), U), ( write('('), write(KK','VV), write(')')), write(' ]'), nl.
-
-/** need to match keys in retract **/
-commit :- getupdates(UL), removedups(UL, DUL), (member((XX, _), DUL), retract(upd(XX, _)), retract(mapsTo(XX, YY))), getupdatemaplist(UML), addDB(DUL).
 /* removedups(L, M)  holds true when list  M  holds exactly the first
    (leftmost) occurrence of each (K,_) that is found in list L. 
 */    
