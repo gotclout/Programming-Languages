@@ -1,0 +1,38 @@
+| ?- [library].
+[Compiling ./library]
+[library compiled, cpu time used: 0.0150 seconds]
+[library loaded]
+
+yes
+| ?- getOverdue('Homer', 25, List).   
+
+List = [k2,k4];
+
+no
+| ?-  getOverdue('Lisa', 25, List).
+
+List = [];
+
+no
+| ?- getOverdue(_, 50, List).
+
+List = [k2,k4,k3,k0];
+
+no
+| ?- 
+
+?- [library]. totalfine(_, 100, Total).
+
+% library compiled 0.00 sec, 1 clauses
+true.
+
+Total = 295.
+
+?- totalfine('Lisa', 25, Amt).
+Amt = 0.
+
+?- totalfine('Homer', 25, Amt).
+Amt = 20.
+
+?-·
+
