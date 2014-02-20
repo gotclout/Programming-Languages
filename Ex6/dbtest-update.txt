@@ -1,0 +1,116 @@
+Warning: /Users/rfoster/Documents/KSU/CIS_505/Ex6-RLF/db6.pl:25:
+Singleton variables: [V]
+Warning: /Users/rfoster/Documents/KSU/CIS_505/Ex6-RLF/db6.pl:43:
+Singleton variables: [UML]
+% db6 compiled 0.00 sec, 8 clauses
+true.
+
+?- addDB([(b,2), (a,1), (c,4)]).
+true.
+
+?- update(a, 99).
+a updated
+true.
+
+?- update(b, 1000).
+b updated
+true.
+
+?- revert.
+b reverted
+true.
+
+?- commit
+|    .
+Updates to commit: [(a,99) ]
+true.
+
+?- listing.
+
+  lookup(A) :-
+    findall((A, B), mapsTo(A, B), H),
+    findall((C, D), upd(C, D), E),
+    (   member((F, G), E),
+        F=A,
+        write(G)
+        ;   member((I, J), H),
+        I=A,
+        write(J)
+    ),
+    nl.
+
+    :- dynamic upd/2.
+
+
+    commit :-
+    getupdates(A),
+    removedups(A, B),
+    retractalltheupdates(B),
+    getupdatemaplist(_),
+    addDB(B).
+
+    :- multifile message_severity_color/2.
+
+
+    :- thread_local thread_message_hook/3.
+    :- dynamic thread_message_hook/3.
+    :- volatile thread_message_hook/3.
+
+
+    nodups([], []).
+    nodups([ (A, B)|C], [ (A, B)|E]) :-
+      nodups(C, D),
+      select((A, _), D, E).
+      nodups([ (A, B)|C], [ (A, B)|D]) :-
+        nodups(C, D).
+
+        getupdates(C) :-
+          write('Updates to commit: ['),
+          findall((A, B), upd(A, B), C),
+          member((D, E), C),
+          write('('),
+          write((D, E)),
+          write(')'),
+          write(' ]'),
+          nl.
+
+          removedups(A, B) :-
+            nodups(A, B), !.
+
+            retractalltheupdates([]).
+            retractalltheupdates([ (A, _)|B]) :-
+              retract(upd(A, _)),
+              retract(mapsTo(A, _)),
+              retractalltheupdates(B).
+
+              update(A, B) :-
+                asserta(upd(A, B)),
+                write(A),
+                write(' updated'),
+                nl.
+
+                addDB([]).
+                addDB([ (A, B)|C]) :-
+                  asserta(mapsTo(A, B)),
+                  addDB(C).
+
+                  revert :-
+                  retract(upd(A, _)),
+                  write(A),
+                  write(' reverted'),
+                  nl, !.
+
+                  getupdatemaplist(H) :-
+                    findall((A, B), mapsTo(A, B), F),
+                    findall((C, D), upd(C, D), E),
+                    append(E, F, G),
+                    removedups(G, H).
+
+                    :- dynamic mapsTo/2.
+
+                    mapsTo(a, 99).
+                    mapsTo(c, 4).
+                    mapsTo(b, 2).
+                    true.
+
+
