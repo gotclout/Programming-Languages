@@ -56,7 +56,8 @@ commit :- getupdates(UL), removedups(UL, DUL),
 */
 retractalltheupdates([]).   /* nothing to do --- finished. */
 retractalltheupdates([(XX,_)|Rest]) :- retract(upd(XX,_)), retract(mapsTo(XX, _)), retractalltheupdates(Rest) .   /* retract the  XX  binding and do TheRest */
-                                       removedups(L, M) :- nodups(L, M), !.
+
+removedups(L, M) :- nodups(L, M), !.
 
 nodups([], []).
 nodups([(K,V)|R], [(K,V)|T]) :- nodups(R, S), select((K,_), S, T).
