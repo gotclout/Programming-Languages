@@ -83,12 +83,12 @@ fun remove(m, nil) = nil |
           ssort [3]  returns  [3] 
           ssort [3,2,1,2]  returns  [1,2,2,3] 
 *)
-fun ssort nil = nil  (* empty-list case *) |
-    ssort xs  =   (* non-empty list case *)
+fun ssort nil = nil  (* empty-list case     *) |
+    ssort xs  =      (* non-empty list case *)
     (
-    let val min = least(xs)
-    in min::ssort(remove(min, xs))
-    end
+      let val min = least(xs)
+        in min::ssort(remove(min, xs))
+      end
     )
 
 (**
